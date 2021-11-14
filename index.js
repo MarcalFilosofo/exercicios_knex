@@ -162,3 +162,39 @@ database.select('estados.nome', 'estados.habitantes').from('estados').where('est
 }).catch(err => {
     console.log(err);
 });
+
+//Valide se um profissional está apto a emitir CRQ
+database.select('professionals.nome', 'professionals.idade', 'professionals.salario', 'professionals.anuidade_paga_vista').from('professionals')
+            .innerJoin('anuidades', 'professionals.id', 'anuidades.id_profissional')
+                .where('professionals.idade', '>', 60)
+                    .where('professionals.salario', '>', 2000)
+                        .where('professionals.anuidade_paga_vista', '>', 100).then(data => {
+    console.log(data);
+}).catch(err => {
+    console.log(err);
+});
+
+//O profisisonal estará apto a emitir CRQ se a ultima anuidade paga for igual ao ano atual
+database.select('professionals.nome', 'professionals.idade', 'professionals.salario', 'professionals.anuidade_paga_vista').from('professionals')
+            .innerJoin('anuidades', 'professionals.id', 'anuidades.id_profissional')
+                .where('professionals.idade', '>', 60)
+                    .where('professionals.salario', '>', 2000)
+                        .where('anuidades.ano', '=', 2020).then(data => {
+    console.log(data);
+}).catch(err => {
+    console.log(err);
+});
+
+// Altere a categoria dos jogos para "AAA" onde eles tiverem o preço maior que 300
+database.update('games', { categoria: 'AAA' }).where('games.preco', '>', 300).then(data => {
+    console.log(data);
+}).catch(err => {
+    console.log(err);
+});
+
+//Agrupe os jogos por preço, onde o preço for maior que 0 e menor que 100 classifique com "A", maior que 100 e menor que 200 classifique com "B" e maior que 200 classifique com "C"
+database.select('games.nome', 'games.preco').from('games').where('games.preco', '>', 0).where('games.preco', '<', 100).groupBy('games.preco').then(data => {
+    console.log(data);
+}).catch(err => {
+    console.log(err);
+});
